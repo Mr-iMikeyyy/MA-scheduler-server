@@ -1,7 +1,6 @@
-from matplotlib_calendar import MplCalendar
-import matplotlib_calendar
+from cal_creator import MplCalendar
 
-feb = MplCalendar(2017, 2) #2017, February
+feb = MplCalendar(2017, 1) #year, month
 feb.add_event(1, '1st day of February')
 feb.add_event(5, '         1         2         3         4         5         6')
 feb.add_event(5, '123456789012345678901234567890123456789012345678901234567890')

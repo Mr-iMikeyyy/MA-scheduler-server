@@ -1,5 +1,6 @@
 import calendar
 import matplotlib.pyplot as plt
+import random
 
 calendar.setfirstweekday(6) # Sunday is 1st day in US
 w_days = 'Sun Mon Tue Wed Thu Fri Sat'.split()
@@ -40,6 +41,7 @@ class MplCalendar(object):
             for week_day, ax in enumerate(ax_row):
                 ax.set_xticks([])
                 ax.set_yticks([])
+                
                 if self.cal[week][week_day] != 0:
                     ax.text(.02, .98,
                             str(self.cal[week][week_day]),
@@ -50,6 +52,8 @@ class MplCalendar(object):
                         verticalalignment='top',
                         horizontalalignment='left',
                         fontsize=9)
+                #for i in range(0,3):
+                    #plt.plot(i, int(round(random.random() * 4)), "-b", label="label")
 
         # use the titles of the first row as the weekdays
         for n, day in enumerate(w_days):
@@ -58,6 +62,6 @@ class MplCalendar(object):
         # Place subplots in a close grid
         f.subplots_adjust(hspace=0)
         f.subplots_adjust(wspace=0)
-        f.suptitle(m_names[self.month] + ' ' + str(self.year),
+        f.suptitle(m_names[self.month - 1] + ' ' + str(self.year),
                    fontsize=20, fontweight='bold')
         plt.show()
