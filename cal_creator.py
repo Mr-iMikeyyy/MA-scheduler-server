@@ -1,8 +1,10 @@
 import calendar
 import matplotlib.pyplot as plt
+import datetime
+import mysql.connector
 import random
 
-calendar.setfirstweekday(6) # Sunday is 1st day in US
+calendar.setfirstweekday(6) # Sunday is 1st day in US 
 w_days = 'Sun Mon Tue Wed Thu Fri Sat'.split()
 m_names = '''
 January February March April
@@ -41,6 +43,15 @@ class MplCalendar(object):
             for week_day, ax in enumerate(ax_row):
                 ax.set_xticks([])
                 ax.set_yticks([])
+                data = {
+                    'John': 8,
+                    'Greg': 7,
+                    'Mike': 4,
+                    'Dibbs': 6
+                }
+                mechs = data.keys()
+                hours = data.values()
+                ax.bar(mechs, hours)
                 
                 if self.cal[week][week_day] != 0:
                     ax.text(.02, .98,

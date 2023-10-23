@@ -1,4 +1,14 @@
 from cal_creator import MplCalendar
+import tkinter
+import matplotlib
+
+matplotlib.use('TkAgg')
+
+class App(tkinter.Tk):
+    def __init__(self):
+        super().__init__()
+
+        self.title('Mark\'s Auto Schedule')
 
 feb = MplCalendar(2017, 1) #year, month
 feb.add_event(1, '1st day of February')
