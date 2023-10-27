@@ -26,6 +26,8 @@ class App(tkinter.Tk):
             print("ID= " + str(id) + ", Name= " + name + "\n")
 
         self.title('Mark\'s Auto Schedule')
+        frame = tkinter.Frame(self)
+        frame.pack()
 
 app= App()
 
