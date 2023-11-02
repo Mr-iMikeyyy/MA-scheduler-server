@@ -12,8 +12,10 @@ class DB():
         }
 
         self.conn = mysql.connector.connect(**self.dbconfig)
+        self.cursor = self.conn.cursor()
         
     
-    def queryDB(self, type: str, query: str):
-        cursor = self.conn.cursor()
-        cursor.execute(query)
+    def queryDB(self, query: str):
+        self.cursor.execute(query)
+        results = self.cursor.fetchall()
+        return results

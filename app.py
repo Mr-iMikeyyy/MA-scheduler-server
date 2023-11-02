@@ -18,13 +18,14 @@ class App(tkinter.Tk):
         
         # cursor = conn.cursor()
 
-        # query = "SELECT id, name FROM mechanics"
+        query = "SELECT id, name FROM mechanics"
 
         # cursor.execute(query)
         # cursor.close()
         # conn.close()
-        # for (id, name) in cursor:
-        #     print("ID= " + str(id) + ", Name= " + name + "\n")
+        results = self.db.queryDB(query)
+        for (id, name) in results:
+            print("ID= " + str(id) + ", Name= " + name + "\n")
 
         self.title('Mark\'s Auto Schedule')
         self.frame = tkinter.Frame(self)
