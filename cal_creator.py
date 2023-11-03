@@ -36,7 +36,7 @@ class MplCalendar(object):
         week, w_day = self._monthday_to_index(day)
         self.events[week][w_day].append(event_str)
 
-    def show(self):
+    def getF(self):
         'create the calendar'
         f, axs = plt.subplots(len(self.cal), 7, sharex=True, sharey=True)
         for week, ax_row in enumerate(axs):
@@ -75,4 +75,4 @@ class MplCalendar(object):
         f.subplots_adjust(wspace=0)
         f.suptitle(m_names[self.month - 1] + ' ' + str(self.year),
                    fontsize=20, fontweight='bold')
-        plt.show()
+        return f
