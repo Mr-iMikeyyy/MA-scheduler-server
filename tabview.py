@@ -8,9 +8,9 @@ class Tabview(customtkinter.CTkTabview):
         super().__init__(*args)
 
         # Create Tabs
-        self.add("Set Appointment")
-        self.add("Calendar")
-        self.add("Configure")
+        appTab = self.add("Set Appointment")
+        calTab = self.add("Calendar")
+        confTab = self.add("Configure")
 
         # Set default active tab
         self.set("Set Appointment")
@@ -25,13 +25,8 @@ class Tabview(customtkinter.CTkTabview):
         # self.tab("Create Post").rowconfigure(1, weight=2)
         # self.tab("Create Post").rowconfigure(2, weight=2)
 
-        ###########
-
-        # Column 0
-
-        ###########
         self.cal = MplCalendar(date.today().year, date.today().month)
         self.f = self.cal.getF()
-        self.canvas = FigureCanvasTkAgg(self.f, master=self.tab("Calendar"))
+        self.canvas = FigureCanvasTkAgg(self.f, master=calTab)
         self.canvas.get_tk_widget().pack()
         self.canvas.draw()

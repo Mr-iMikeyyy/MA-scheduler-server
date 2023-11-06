@@ -1,4 +1,5 @@
 import calendar
+from matplotlib.figure import Figure
 import matplotlib.pyplot as plt
 import datetime
 import mysql.connector
@@ -38,6 +39,7 @@ class MplCalendar(object):
 
     def getF(self):
         'create the calendar'
+        f = Figure()
         f, axs = plt.subplots(len(self.cal), 7, sharex=True, sharey=True)
         for week, ax_row in enumerate(axs):
             for week_day, ax in enumerate(ax_row):
