@@ -15,7 +15,7 @@ class DB():
         self.cursor = self.conn.cursor()
         
     
-    def queryDB(self, query: str):
-        self.cursor.execute(query)
+    def queryDB(self, query: str, val: tuple):
+        self.cursor.execute(query, val)
         results = self.cursor.fetchall()
         return results

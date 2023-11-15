@@ -1,20 +1,17 @@
 from cal_creator import MplCalendar
 import customtkinter
 import matplotlib
-from db import DB
 from frame import Frame
 
 
 matplotlib.use('TkAgg')
 
 class App(customtkinter.CTk):
-    def __init__(self):
-        super().__init__()
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
 
         customtkinter.set_appearance_mode("system")
         customtkinter.set_default_color_theme("dark-blue")
-
-        self.db = DB()
 
         self.geometry("800x500")
 
