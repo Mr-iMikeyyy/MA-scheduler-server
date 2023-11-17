@@ -66,9 +66,16 @@ class Tabview(customtkinter.CTkTabview):
     def set_apt(self):
         if (self.validate()):
             query = "INSERT INTO apmts (name, car, description, apt_date, mechanic_id) VALUES (%s,%s,%s,%s,%s)"
-            values = (self.nameEntry.get(), self.carEntry.get(), self.descEntry.get(), self.daySelect.get_date(), self.mechChoice.get())
-            result = self.db.queryDB(query,values)
-            print(result)
+            mechanicID = int
+            match self.mechChoice.get():
+                case "John": mechanicID = 1
+                case "Greg": mechanicID = 2
+                case "Mike": mechanicID = 3
+                case "Dibbs": mechanicID = 4
+                case _: mechanicID = None
+            values = (self.nameEntry.get(), self.carEntry.get(), self.descEntry.get(), self.daySelect.get_date(), mechanicID)
+            print(values)
+            self.db.insertDB(query,values)
 
     def validate(self) -> bool:
         status = ""
