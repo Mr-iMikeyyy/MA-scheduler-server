@@ -13,7 +13,7 @@ class App(customtkinter.CTk):
         customtkinter.set_appearance_mode("system")
         customtkinter.set_default_color_theme("dark-blue")
 
-        self.geometry("800x500")
+        self.geometry("800x600")
 
 
         

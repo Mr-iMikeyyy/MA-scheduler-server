@@ -11,4 +11,4 @@ class Frame(customtkinter.CTkFrame):
         self.title.pack(pady=20, padx=10)
 
         self.tabview = Tabview(self)
-        self.tabview.pack(padx=20,pady=10)
+        self.tabview.pack(padx=20,pady=10, fill= "both", expand=True)

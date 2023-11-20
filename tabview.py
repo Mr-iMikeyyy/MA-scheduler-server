@@ -11,7 +11,6 @@ class Tabview(customtkinter.CTkTabview):
 
         self.db = DB()
         
-
         # Create Tabs
         self.appTab = self.add("Set Appointment")
         self.calTab = self.add("Calendar")
@@ -22,50 +21,52 @@ class Tabview(customtkinter.CTkTabview):
 
         # Configure Columns of grid
         self.tab("Set Appointment").columnconfigure(0, weight=1)
-        self.tab("Set Appointment").columnconfigure(1, weight=3)
+        self.tab("Set Appointment").columnconfigure(1, weight=1)
+        self.tab("Set Appointment").columnconfigure(2, weight=1)
 
         self.nameLabel = customtkinter.CTkLabel(self.appTab, text="Name:")
         self.nameLabel.grid(column=0, row=0)
         self.nameEntry = customtkinter.CTkEntry(self.appTab, placeholder_text="Name")
-        self.nameEntry.grid(column=1, row=0)
+        self.nameEntry.grid(column=1, row=0, sticky="EW")
 
         self.carLabel = customtkinter.CTkLabel(self.appTab, text="Car:")
         self.carLabel.grid(column=0, row=1)
         self.carEntry = customtkinter.CTkEntry(self.appTab, placeholder_text="Car")
-        self.carEntry.grid(column=1, row=1)
+        self.carEntry.grid(column=1, row=1, sticky="EW")
 
         self.descLabel = customtkinter.CTkLabel(self.appTab, text="Description:")
         self.descLabel.grid(column=0, row=2)
         self.descEntry = customtkinter.CTkEntry(self.appTab, placeholder_text="Description")
-        self.descEntry.grid(column=1, row=2)
+        self.descEntry.grid(column=1, row=2, sticky="EW")
 
         self.mechLabel = customtkinter.CTkLabel(self.appTab, text="Mechanic:")
         self.mechLabel.grid(column=0, row=3)
         self.mechChoice = customtkinter.CTkComboBox(master=self.appTab, values=["John", "Mike", "Dibbs", "Greg"])
-        self.mechChoice.grid(column=1,row=3)
+        self.mechChoice.grid(column=1,row=3, sticky="EW")
+
+        self.hourLabel = customtkinter.CTkLabel(self.appTab, text="Hours:")
+        self.hourLabel.grid(column=0, row=4)
+        self.hourChoice = customtkinter.CTkComboBox(master=self.appTab, values=["1", "2", "3", "4", "5", "6", "7", "8"])
+        self.hourChoice.grid(column=1, row=4, sticky="EW")
         
-        today = date.today()
         self.daySelect = Calendar(
             master = self.appTab, 
             selectmode = 'day',
             date_pattern = "y-m-d")
-            # year = today.year, 
-            # month = today.month, 
-            # day = today.day)
         self.daySelect.grid(
-                column=0, 
-                row=4, 
-                columnspan=2)
+                column=2, 
+                row=0, 
+                rowspan=4)
         
-        self.msg = customtkinter.CTkTextbox(master=self.appTab, state="disabled")
-        self.msg.grid(column=0, columnspan=2, row=6)
+        self.msg = customtkinter.CTkTextbox(master=self.appTab, state="disabled", height= 150)
+        self.msg.grid(column=0, columnspan=3, row=5, sticky="ew", pady=10)
 
-        self.submitBtn = customtkinter.CTkButton(self.appTab, command=self.set_apt)
-        self.submitBtn.grid(column=0, columnspan=2, row=7)
+        self.submitBtn = customtkinter.CTkButton(self.appTab, command=self.set_apt, text="Set Appt.")
+        self.submitBtn.grid(column=0, columnspan=3, row=6)
         
     def set_apt(self):
         if (self.validate()):
-            query = "INSERT INTO apmts (name, car, description, apt_date, mechanic_id) VALUES (%s,%s,%s,%s,%s)"
+            query = "INSERT INTO apmts (name, car, description, apt_date, mechanic_id, hours) VALUES (%s,%s,%s,%s,%s,%s)"
             mechanicID = int
             match self.mechChoice.get():
                 case "John": mechanicID = 1
@@ -73,7 +74,7 @@ class Tabview(customtkinter.CTkTabview):
                 case "Mike": mechanicID = 3
                 case "Dibbs": mechanicID = 4
                 case _: mechanicID = None
-            values = (self.nameEntry.get(), self.carEntry.get(), self.descEntry.get(), self.daySelect.get_date(), mechanicID)
+            values = (self.nameEntry.get(), self.carEntry.get(), self.descEntry.get(), self.daySelect.get_date(), mechanicID, int(self.hourChoice.get()))
             print(values)
             self.db.insertDB(query,values)
 
@@ -88,6 +89,8 @@ class Tabview(customtkinter.CTkTabview):
             status += "Description cannot be blank \n"
         if (date.fromisoformat(self.daySelect.get_date()) <= date.today()):
             status += "Date chosen cannot be in the past \n"
+        if (self.hourChoice.get() == "0"):
+            status += "Hours cannot be 0 \n"
 
         if (status == ""):
             return True
