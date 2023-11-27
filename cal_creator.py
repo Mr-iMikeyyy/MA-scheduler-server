@@ -4,6 +4,8 @@ import matplotlib.pyplot as plt
 import datetime
 import mysql.connector
 import random
+from mechs import Mechs
+from db import DB
 
 calendar.setfirstweekday(6) # Sunday is 1st day in US 
 w_days = 'Sun Mon Tue Wed Thu Fri Sat'.split()
@@ -13,13 +15,15 @@ May June July August
 September October November December'''.split()
 
 class MplCalendar(object):
-    def __init__(self, year, month):
+    def __init__(self, year, month, db: DB):
         self.year = year
         self.month = month
         self.cal = calendar.monthcalendar(year, month)
         # monthcalendar creates a list of lists for each week
         # Save the events data in the same format
         self.events = [[[] for day in week] for week in self.cal]
+
+        self.db = db
         
     def _monthday_to_index(self, day):
         'The index of the day in the list of lists'
@@ -39,21 +43,25 @@ class MplCalendar(object):
 
     def getF(self):
         'create the calendar'
-        f = Figure()
         f, axs = plt.subplots(len(self.cal), 7, sharex=True, sharey=True)
         for week, ax_row in enumerate(axs):
             for week_day, ax in enumerate(ax_row):
                 ax.set_xticks([])
                 ax.set_yticks([])
-                data = {
-                    'John': 8,
-                    'Greg': 7,
-                    'Mike': 4,
-                    'Dibbs': 6
-                }
-                mechs = data.keys()
-                hours = data.values()
-                ax.bar(mechs, hours)
+                # data = {
+                #     'John': 8,
+                #     'Greg': 7,
+                #     'Mike': 4,
+                #     'Dibbs': 6
+                # }
+                # for x in Mechs.mechs:
+                #     query = "SELECT from appts where mechanic_id = %s"
+                #     values = Mechs.mechs[x].key()
+                #     DB.queryDB(query, values)
+                    
+
+                # mechs = Mechs.mechs.values()
+                # ax.bar(mechs, hours)
                 
                 if self.cal[week][week_day] != 0:
                     ax.text(.02, .98,

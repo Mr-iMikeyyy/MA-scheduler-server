@@ -15,6 +15,8 @@ class App(customtkinter.CTk):
 
         self.geometry("800x600")
 
+        self.protocol("WM_DELETE_WINDOW", self.quit)
+
 
         
         # cursor = conn.cursor()

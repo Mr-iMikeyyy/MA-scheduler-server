@@ -12,12 +12,14 @@ class DB():
         }
 
         self.conn = mysql.connector.connect(**self.dbconfig)
+        self.queryDB("SELECT * from mechanics", "")
         
     
-    def queryDB(self, query: str):
+    def queryDB(self, query: str, values: str):
         cursor = self.conn.cursor()
-        cursor.execute(query)
+        cursor.execute(query, values)
         results = cursor.fetchall()
+        print(results)
         return results
     
     def insertDB(self, query: str, val: tuple):

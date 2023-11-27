@@ -63,6 +63,18 @@ class Tabview(customtkinter.CTkTabview):
 
         self.submitBtn = customtkinter.CTkButton(self.appTab, command=self.set_apt, text="Set Appt.")
         self.submitBtn.grid(column=0, columnspan=3, row=6)
+
+        ######
+
+        #Calendar Tab
+
+        ######
+
+        self.cal = MplCalendar(date.today().year, date.today().month, self.db)
+        self.f = self.cal.getF()
+        self.canvas = FigureCanvasTkAgg(self.f, master=self.calTab)
+        self.canvas.get_tk_widget().pack()
+        self.canvas.draw()
         
     def set_apt(self):
         if (self.validate()):
@@ -111,10 +123,6 @@ class Tabview(customtkinter.CTkTabview):
         # self.tab("Create Post").rowconfigure(1, weight=2)
         # self.tab("Create Post").rowconfigure(2, weight=2)
 
-        # self.cal = MplCalendar(date.today().year, date.today().month)
-        # self.f = self.cal.getF()
-        # self.canvas = FigureCanvasTkAgg(self.f, master=calTab)
-        # self.canvas.get_tk_widget().pack()
-        # self.canvas.draw()
+        
     
     
