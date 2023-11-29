@@ -23,6 +23,8 @@ class MplCalendar(object):
         # Save the events data in the same format
         self.events = [[[] for day in week] for week in self.cal]
 
+        self.mechs = Mechs(db)
+
         self.db = db
         
     def _monthday_to_index(self, day):
@@ -54,14 +56,31 @@ class MplCalendar(object):
                 #     'Mike': 4,
                 #     'Dibbs': 6
                 # }
-                # for x in Mechs.mechs:
-                #     query = "SELECT from appts where mechanic_id = %s"
-                #     values = Mechs.mechs[x].key()
-                #     DB.queryDB(query, values)
+
+                currentDay = str((week * 7) + week_day)
+                
+                
+
+                if (currentDay != '0'):
+                    print("len: " + str(len(currentDay)))
+                    if (len(currentDay) == 1):
+                        currentDay = '0' + currentDay
+                        print("activated")
+                        print(currentDay)
+                    data = []
+                    for x in range(len(self.mechs.mechs)):
+                        print("currentday in loop: " + currentDay)
+                        query = "SELECT COUNT(id) from appts where mechanic_id = %s and where date = %s"
+                        values = (self.mechs.mechs[x + 1], datetime.date.fromisoformat(str(self.year) + "-" + str(self.month) + "-" + currentDay))
+                        result = self.db.queryDB(query, values)
+                        data.append(result)
+
+                        ax.bar(self.mechs.mechs.keys(), data)
+                
                     
 
                 # mechs = Mechs.mechs.values()
-                # ax.bar(mechs, hours)
+                
                 
                 if self.cal[week][week_day] != 0:
                     ax.text(.02, .98,
