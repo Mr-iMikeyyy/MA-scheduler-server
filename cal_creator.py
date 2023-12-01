@@ -32,9 +32,9 @@ class MplCalendar(object):
         for week_n, week in enumerate(self.cal):
             try:
                 i = week.index(day)
-                return week_n, i
+                return True
             except ValueError:
-                pass
+                return False
          # couldn't find the day
         raise ValueError("There aren't {} days in the month".format(day))
 
@@ -50,6 +50,7 @@ class MplCalendar(object):
             for week_day, ax in enumerate(ax_row):
                 ax.set_xticks([])
                 ax.set_yticks([])
+                ax.set_ylim([0, 8])
                 # data = {
                 #     'John': 8,
                 #     'Greg': 7,
@@ -57,25 +58,32 @@ class MplCalendar(object):
                 #     'Dibbs': 6
                 # }
 
-                currentDay = str((week * 7) + week_day)
+                first_day = calendar.monthrange(self.year, self.month)[0]
+                print(first_day)
+
+                currentDay = str(((week * 7) + week_day) - first_day)
                 
                 
 
-                if (currentDay != '0'):
-                    print("len: " + str(len(currentDay)))
+                if (0 < int(currentDay) <= calendar.monthrange(self.year, self.month)[1]):
+                    # print("len: " + str(len(currentDay)))
                     if (len(currentDay) == 1):
-                        currentDay = '0' + currentDay
-                        print("activated")
-                        print(currentDay)
-                    data = []
+                        currentDay = "0" + currentDay
+                        # print("activated")
+                        # print(currentDay)
+                    xvals = []
+                    yvals = []
                     for x in range(len(self.mechs.mechs)):
                         print("currentday in loop: " + currentDay)
-                        query = "SELECT COUNT(id) from appts where mechanic_id = %s and where date = %s"
-                        values = (self.mechs.mechs[x + 1], datetime.date.fromisoformat(str(self.year) + "-" + str(self.month) + "-" + currentDay))
+                        query = "SELECT COUNT(id) FROM apmts WHERE mechanic_id = %s and apt_date = %s"
+                        values = (x + 1, "".join([str(self.year), "-", str(self.month), "-", str(currentDay)]))
                         result = self.db.queryDB(query, values)
-                        data.append(result)
-
-                        ax.bar(self.mechs.mechs.keys(), data)
+                        print("result in loop: " + str(result[0][0]))
+                        xvals.append(self.mechs.mechs[x + 1]) 
+                        yvals.append(result[0][0]) 
+                    print(yvals)
+                    ax.bar(xvals, yvals)
+                    
                 
                     
 
