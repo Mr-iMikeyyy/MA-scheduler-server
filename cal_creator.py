@@ -82,7 +82,9 @@ class MplCalendar(object):
                         xvals.append(self.mechs.mechs[x + 1]) 
                         yvals.append(result[0][0]) 
                     print(yvals)
-                    ax.bar(xvals, yvals)
+                    bar_colors = ['tab:red', 'tab:blue', 'tab:green', 'tab:orange', 'tab:purple']
+
+                    ax.bar(xvals, yvals, label=yvals, color=bar_colors)
                     
                 
                     
@@ -112,4 +114,5 @@ class MplCalendar(object):
         f.subplots_adjust(wspace=0)
         f.suptitle(m_names[self.month - 1] + ' ' + str(self.year),
                    fontsize=20, fontweight='bold')
+        f.legend()
         return f

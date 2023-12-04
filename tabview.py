@@ -41,7 +41,7 @@ class Tabview(customtkinter.CTkTabview):
 
         self.mechLabel = customtkinter.CTkLabel(self.appTab, text="Mechanic:")
         self.mechLabel.grid(column=0, row=3)
-        self.mechChoice = customtkinter.CTkComboBox(master=self.appTab, values=["John", "Mike", "Dibbs", "Greg"])
+        self.mechChoice = customtkinter.CTkComboBox(master=self.appTab, values=["John", "Mike", "Dibbs", "Greg", "Garet"])
         self.mechChoice.grid(column=1,row=3, sticky="EW")
 
         self.hourLabel = customtkinter.CTkLabel(self.appTab, text="Hours:")
@@ -56,7 +56,7 @@ class Tabview(customtkinter.CTkTabview):
         self.daySelect.grid(
                 column=2, 
                 row=0, 
-                rowspan=4)
+                rowspan=5)
         
         self.msg = customtkinter.CTkTextbox(master=self.appTab, state="disabled", height= 150)
         self.msg.grid(column=0, columnspan=3, row=5, sticky="ew", pady=10)
@@ -85,8 +85,12 @@ class Tabview(customtkinter.CTkTabview):
                 case "Greg": mechanicID = 2
                 case "Mike": mechanicID = 3
                 case "Dibbs": mechanicID = 4
+                case "Garet": mechanicID = 5
                 case _: mechanicID = None
-            values = (self.nameEntry.get(), self.carEntry.get(), self.descEntry.get(), self.daySelect.get_date(), mechanicID, int(self.hourChoice.get()))
+            aptDate = self.daySelect.get_date()
+            if (len(aptDate) < 10):
+                aptDate = aptDate[:8] + "0" + aptDate[8:]
+            values = (self.nameEntry.get(), self.carEntry.get(), self.descEntry.get(), aptDate, mechanicID, int(self.hourChoice.get()))
             print(values)
             self.db.insertDB(query,values)
 
@@ -99,7 +103,10 @@ class Tabview(customtkinter.CTkTabview):
             status += "Car cannot be blank \n" 
         if (self.descEntry.get() == ""):
             status += "Description cannot be blank \n"
-        if (date.fromisoformat(self.daySelect.get_date()) <= date.today()):
+        aptDate = self.daySelect.get_date()
+        if (len(aptDate) < 10):
+            aptDate = aptDate[:8] + "0" + aptDate[8:]
+        if (date.fromisoformat(aptDate) <= date.today()):
             status += "Date chosen cannot be in the past \n"
         if (self.hourChoice.get() == "0"):
             status += "Hours cannot be 0 \n"
