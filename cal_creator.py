@@ -22,6 +22,7 @@ class MplCalendar(object):
         # monthcalendar creates a list of lists for each week
         # Save the events data in the same format
         self.events = [[[] for day in week] for week in self.cal]
+        self.first_day = calendar.monthrange(self.year, self.month)[0]
 
         self.mechs = Mechs(db)
 
@@ -45,6 +46,7 @@ class MplCalendar(object):
 
     def getF(self):
         'create the calendar'
+        
         f, axs = plt.subplots(len(self.cal), 7, sharex=True, sharey=True)
         for week, ax_row in enumerate(axs):
             for week_day, ax in enumerate(ax_row):
@@ -84,7 +86,7 @@ class MplCalendar(object):
                     print(yvals)
                     bar_colors = ['tab:red', 'tab:blue', 'tab:green', 'tab:orange', 'tab:purple']
 
-                    ax.bar(xvals, yvals, label=yvals, color=bar_colors)
+                    ax.bar(xvals, yvals, label=xvals, color=bar_colors)
                     
                 
                     
@@ -93,15 +95,15 @@ class MplCalendar(object):
                 
                 
                 if self.cal[week][week_day] != 0:
-                    ax.text(.02, .98,
+                    ax.text(.02, 7,
                             str(self.cal[week][week_day]),
                             verticalalignment='top',
                             horizontalalignment='left')
-                contents = "\n".join(self.events[week][week_day])
-                ax.text(.03, .85, contents,
-                        verticalalignment='top',
-                        horizontalalignment='left',
-                        fontsize=9)
+                # contents = "\n".join(self.events[week][week_day])
+                # ax.text(.03, .85, contents,
+                #         verticalalignment='top',
+                #         horizontalalignment='left',
+                #         fontsize=9)
                 #for i in range(0,3):
                     #plt.plot(i, int(round(random.random() * 4)), "-b", label="label")
 
@@ -110,9 +112,11 @@ class MplCalendar(object):
             axs[0][n].set_title(day)
 
         # Place subplots in a close grid
+        # plt.tight_layout()
         f.subplots_adjust(hspace=0)
         f.subplots_adjust(wspace=0)
         f.suptitle(m_names[self.month - 1] + ' ' + str(self.year),
                    fontsize=20, fontweight='bold')
-        f.legend()
+        h, l = axs[0][self.first_day+1].get_legend_handles_labels()
+        f.legend(h, l, bbox_to_anchor = (1.02, 1.0, 1.12, 1.0), loc='lower left')
         return f
