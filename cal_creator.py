@@ -118,5 +118,5 @@ class MplCalendar(object):
         f.suptitle(m_names[self.month - 1] + ' ' + str(self.year),
                    fontsize=20, fontweight='bold')
         h, l = axs[0][self.first_day+1].get_legend_handles_labels()
-        f.legend(h, l, bbox_to_anchor = (1.02, 1.0, 1.12, 1.0), loc='lower left')
+        f.legend(h, l)
         return f

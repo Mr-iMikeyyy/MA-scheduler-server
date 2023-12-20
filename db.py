@@ -30,7 +30,9 @@ class DB():
         except mysql.connector.Error as err:
             print("insert failed: \n")
             print(err)
+            return False
         finally:
             print("affected rows = {}".format(cursor.rowcount))
             cursor.close()
+            return True
 

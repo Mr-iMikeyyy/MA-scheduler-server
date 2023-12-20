@@ -7,7 +7,7 @@ from db import DB
 
 class Tabview(customtkinter.CTkTabview):
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+        super().__init__(command = self.on_tab_change, *args, **kwargs)
 
         self.db = DB()
         
@@ -41,7 +41,7 @@ class Tabview(customtkinter.CTkTabview):
 
         self.mechLabel = customtkinter.CTkLabel(self.appTab, text="Mechanic:")
         self.mechLabel.grid(column=0, row=3)
-        self.mechChoice = customtkinter.CTkComboBox(master=self.appTab, values=["John", "Mike", "Dibbs", "Greg", "Garet"])
+        self.mechChoice = customtkinter.CTkComboBox(master=self.appTab, values=["Choose a Mechanic", "John", "Mike", "Dibbs", "Greg", "Garet"])
         self.mechChoice.grid(column=1,row=3, sticky="EW")
 
         self.hourLabel = customtkinter.CTkLabel(self.appTab, text="Hours:")
@@ -69,12 +69,15 @@ class Tabview(customtkinter.CTkTabview):
         #Calendar Tab
 
         ######
-
-        self.cal = MplCalendar(date.today().year, date.today().month, self.db)
-        self.f = self.cal.getF()
-        self.canvas = FigureCanvasTkAgg(self.f, master=self.calTab)
-        self.canvas.get_tk_widget().pack()
-        self.canvas.draw()
+    
+    def on_tab_change(self):
+        if(self.get() == "Calendar"):
+            print("refreshed cal")
+            self.cal = MplCalendar(date.today().year, date.today().month, self.db)
+            self.f = self.cal.getF()
+            self.canvas = FigureCanvasTkAgg(self.f, master=self.calTab)
+            self.canvas.get_tk_widget().pack()
+            self.canvas.draw()
         
     def set_apt(self):
         if (self.validate()):
@@ -92,7 +95,25 @@ class Tabview(customtkinter.CTkTabview):
                 aptDate = aptDate[:8] + "0" + aptDate[8:]
             values = (self.nameEntry.get(), self.carEntry.get(), self.descEntry.get(), aptDate, mechanicID, int(self.hourChoice.get()))
             print(values)
-            self.db.insertDB(query,values)
+            if (self.db.insertDB(query,values)):
+                self.resetFormFields()
+                self.setMessage("Appointment Set!")
+            else:
+                self.setMessage("Error in the Database, Contact Puppy")
+
+    def setMessage(self, msg: str):
+        self.msg.configure(state="normal")
+        self.msg.delete("0.0", "end")
+        self.msg.insert("0.0", msg)
+        self.msg.configure(state="disabled")
+            
+    def resetFormFields(self):
+        self.nameEntry.delete(0, len(self.nameEntry.get()))
+        self.carEntry.delete(0, len(self.carEntry.get()))
+        self.descEntry.delete(0, len(self.descEntry.get()))
+        self.mechChoice.set("Choose a Mechanic")
+        self.hourChoice.set("1")
+        self.nameEntry.focus_set()
 
     def validate(self) -> bool:
         status = ""
@@ -119,17 +140,3 @@ class Tabview(customtkinter.CTkTabview):
             self.msg.insert("0.0", status)
             self.msg.configure(state="disabled")
             return False
-
-        
-
-        
-        
-
-        #Configure Rows of Grid
-        # self.tab("Create Post").rowconfigure(0, weight=2)
-        # self.tab("Create Post").rowconfigure(1, weight=2)
-        # self.tab("Create Post").rowconfigure(2, weight=2)
-
-        
-    
-    
