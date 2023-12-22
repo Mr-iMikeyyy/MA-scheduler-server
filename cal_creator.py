@@ -61,7 +61,7 @@ class MplCalendar(object):
                 # }
 
                 first_day = calendar.monthrange(self.year, self.month)[0]
-                print(first_day)
+                # print(first_day)
 
                 currentDay = str(((week * 7) + week_day) - first_day)
                 

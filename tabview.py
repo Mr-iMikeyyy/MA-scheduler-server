@@ -72,12 +72,13 @@ class Tabview(customtkinter.CTkTabview):
     
     def on_tab_change(self):
         if(self.get() == "Calendar"):
-            print("refreshed cal")
-            self.cal = MplCalendar(date.today().year, date.today().month, self.db)
-            self.f = self.cal.getF()
-            self.canvas = FigureCanvasTkAgg(self.f, master=self.calTab)
-            self.canvas.get_tk_widget().pack()
-            self.canvas.draw()
+            for widget in self.calTab.winfo_children(): widget.destroy()
+            cal = MplCalendar(date.today().year, date.today().month, self.db)
+            f = cal.getF()
+            canvas = FigureCanvasTkAgg(f, master=self.calTab)
+            canvas.get_tk_widget().pack(fill="both", expand=True)
+            canvas.draw()
+            print("done refreshing")
         
     def set_apt(self):
         if (self.validate()):

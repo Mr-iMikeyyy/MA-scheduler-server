@@ -12,7 +12,6 @@ class DB():
         }
 
         self.conn = mysql.connector.connect(**self.dbconfig)
-        self.queryDB("SELECT * from mechanics", "")
         
     
     def queryDB(self, query: str, values: str):
@@ -20,6 +19,7 @@ class DB():
         cursor.execute(query, values)
         results = cursor.fetchall()
         print(results)
+        cursor.close()
         return results
     
     def insertDB(self, query: str, val: tuple):
