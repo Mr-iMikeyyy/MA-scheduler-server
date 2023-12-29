@@ -6,6 +6,7 @@ import mysql.connector
 import random
 from mechs import Mechs
 from db import DB
+from matplotlib.widgets import Button
 
 calendar.setfirstweekday(6) # Sunday is 1st day in US 
 w_days = 'Sun Mon Tue Wed Thu Fri Sat'.split()
@@ -27,6 +28,8 @@ class MplCalendar(object):
         self.mechs = Mechs(db)
 
         self.db = db
+
+        
         
     def _monthday_to_index(self, day):
         'The index of the day in the list of lists'
@@ -44,7 +47,51 @@ class MplCalendar(object):
         week, w_day = self._monthday_to_index(day)
         self.events[week][w_day].append(event_str)
 
-    def getF(self):
+    def _on_subplot_click(self, event):
+        """
+        Event handler for subplot click. You can customize this method to perform
+        actions when a subplot is clicked.
+        """
+        week = event.artist._week
+        week_day = event.artist._week_day
+        day_value = self.cal[week][week_day]
+        print(f"Clicked on {m_names[self.month - 1]} {day_value}, {self.year}")
+
+        # Retrieve x and y data directly from the clicked subplot
+        mechanic_names = event.artist.get_x()  # Access x-values
+        mechanic_hours = event.artist.get_heights()  # Access heights of the bars
+
+        # Save the reference to the current figure
+        # self.previous_fig = plt.gcf()
+
+        # Create a new figure with a single subplot
+        fig, ax = plt.subplots()
+        ax.set_title(f"{m_names[self.month - 1]} {day_value}, {self.year}")
+        ax.bar(mechanic_names, mechanic_hours)
+        ax.set_xlabel('Mechanic')
+        ax.set_ylabel('Hours')
+        ax.set_ylim([0, 8])
+        
+
+        
+
+        # Add a "Back" button to the new figure
+        button_ax = plt.axes([0.81, 0.01, 0.1, 0.05])  # Adjust these coordinates as needed
+        back_button = Button(button_ax, 'Back')
+        back_button.on_clicked(self.go_back_to_previous_fig)
+
+        # Show the new figure
+        plt.show()
+
+    def go_back_to_previous_fig(self):
+        """
+        Method to go back to the previous figure.
+        """
+        if self.previous_fig is not None:
+            plt.close()
+            self.previous_fig = None
+
+    def getFigure(self):
         'create the calendar'
         
         f, axs = plt.subplots(len(self.cal), 7, sharex=True, sharey=True)
@@ -87,6 +134,12 @@ class MplCalendar(object):
                     bar_colors = ['tab:red', 'tab:blue', 'tab:green', 'tab:orange', 'tab:purple']
 
                     ax.bar(xvals, yvals, label=xvals, color=bar_colors)
+
+                    # Set custom attributes for the artist (subplot) to use in the event handler
+                    ax._week = week
+                    ax._week_day = week_day
+
+            
                     
                 
                     
@@ -106,7 +159,7 @@ class MplCalendar(object):
                 #         fontsize=9)
                 #for i in range(0,3):
                     #plt.plot(i, int(round(random.random() * 4)), "-b", label="label")
-
+        
         # use the titles of the first row as the weekdays
         for n, day in enumerate(w_days):
             axs[0][n].set_title(day)

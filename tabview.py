@@ -1,4 +1,6 @@
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
+from matplotlib.figure import Figure
+from matplotlib.widgets import Button
 from cal_creator import MplCalendar
 import customtkinter
 from datetime import date ,datetime
@@ -10,11 +12,18 @@ class Tabview(customtkinter.CTkTabview):
         super().__init__(command = self.on_tab_change, *args, **kwargs)
 
         self.db = DB()
+
+        self.year = date.today().year
+        self.month = date.today().month
+
+        self.cal = MplCalendar(self.year, self.month, self.db)
+
+        self.original_layout = None
         
         # Create Tabs
         self.appTab = self.add("Set Appointment")
         self.calTab = self.add("Calendar")
-        self.confTab = self.add("Configure")
+        self.configTab = self.add("Configure")
 
         # Set default active tab
         self.set("Set Appointment")
@@ -69,16 +78,52 @@ class Tabview(customtkinter.CTkTabview):
         #Calendar Tab
 
         ######
+
+    def _on_subplot_click(self, event):
+        if event.inaxes is not None:
+            ax = event.inaxes
+            print(ax.get_children())
+            fig = ax.figure
+
+            # Save the original layout if it hasn't been saved yet
+            if self.original_layout is None:
+                self.original_layout = fig.get_layout()
+
+            # Remove all existing elements from the figure
+            for child in fig.get_children():
+                if child != ax:
+                    child.remove()
+
+            # Adjust layout to have a single subplot that fills the entire figure
+            ax.set_position([0, 0, 1, 1])
+
+             # Add a "Back" button to the new figure
+            button_ax = fig.add_axes([0.81, 0.01, 0.1, 0.05])  # Adjust these coordinates as needed
+            back_button = Button(button_ax, 'Back')
+            back_button.on_clicked(self.go_back_to_previous_fig)
+
+            fig.canvas.draw()
+    
+    def _on_back_button_click(self):
+        # Revert to the original layout
+        if self.original_layout is not None:
+            self.restore_original_layout()
+
+    def restore_original_layout(self):
+        # Restore the original layout of the figure
+        if self.original_layout is not None:
+            self.original_layout.restore()
     
     def on_tab_change(self):
         if(self.get() == "Calendar"):
             for widget in self.calTab.winfo_children(): widget.destroy()
-            cal = MplCalendar(date.today().year, date.today().month, self.db)
-            f = cal.getF()
-            canvas = FigureCanvasTkAgg(f, master=self.calTab)
+            fig = self.cal.getFigure()
+            canvas = FigureCanvasTkAgg(fig, master=self.calTab)
+            canvas.mpl_connect('button_press_event', self._on_subplot_click)
             canvas.get_tk_widget().pack(fill="both", expand=True)
             canvas.draw()
             print("done refreshing")
+
         
     def set_apt(self):
         if (self.validate()):
